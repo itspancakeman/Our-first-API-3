@@ -25,8 +25,16 @@ app.use(session({
 }));
 
 //tevin --
-
-
+app.get('/cart', async (req, res) => {
+    try  {
+        const cart = await Cart.find({});
+        res.render('cart', { cart });
+    } catch (error) {
+        console.log('----error----\n');
+        res.send('error fetching cart');
+    }
+})
+//tevin --
 //collin --
 //====== ALL PRODUCTS GET ======
 app.get('/products', async (req, res) => {
@@ -57,5 +65,57 @@ app.get('/products/:id', async (req, res) => {
 //collin --
 
 //collin --
-//===== 
+//===== NEW PRODUCT POST =====
+app.post('products/new', urlencodedParser, async (req, res) => {
+    const {title, brand, price, inStock, specs, shippedBy, soldBy, reviews, photos} = req.body;
+    
+    try {
+        const newProduct = await Product.create({
+            title,
+            brand,
+            price,
+            inStock,
+            specs,
+            shippedBy,
+            soldBy,
+            reviews,
+            photos
+        })
+        res.send('Product created. Thanks! 😀');
+    } catch (error) {
+        console.log('----error----\n', error);
+        res.send('Error creating product. Please try again');
+    }
+});
+//collin --
+
+//collin --
+//====== EDIT PRODUCT PUT ======
+app.put('/products/:id', urlencodedParser, async(req, res) => {
+    const {title, brand, price, inStock, specs, shippedBy, soldBy, reviews, photos} = req.body;
+    try {
+        const updatedProduct = await Product.findOneAndUpdate(
+            { id: req.params.id },
+            {
+                title,
+                brand,
+                price,
+                inStock,
+                specs,
+                shippedBy,
+                soldBy,
+                reviews,
+                photos
+            },
+        );
+        if (updatedProduct) {
+            res.JSON(updatedProduct);
+        } else {
+            res.send('Error product not found.');
+        }
+    } catch (error) {
+        console.log('-----error----\n', error);
+        res.send('Error updating product, please try again.');
+    }
+});
 //collin --
