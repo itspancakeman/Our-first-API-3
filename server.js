@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const { Product } = require('./models');
+const { ProductReview } = require('./models');
 const { User } = require('./models');
 const { Cart } = require('./models');
 const { Order } = require('./models');
@@ -25,6 +26,7 @@ app.use(session({
 }));
 
 //tevin --
+//====== CART GET ======
 app.get('/cart', async (req, res) => {
     try  {
         const cart = await Cart.find({});
@@ -32,6 +34,18 @@ app.get('/cart', async (req, res) => {
     } catch (error) {
         console.log('----error----\n');
         res.send('error fetching cart');
+    }
+})
+
+//====== ORDER GET =====
+app.get('/checkout', async (req, res) => {
+    try {
+        const order = await Order.find({});
+        res.render('order', { order });
+    }
+    catch (error) {
+        console.log('----error----\n');
+        res.send('error fetching checkout');
     }
 })
 //tevin --
@@ -116,6 +130,37 @@ app.put('/products/:id', urlencodedParser, async(req, res) => {
     } catch (error) {
         console.log('-----error----\n', error);
         res.send('Error updating product, please try again.');
+    }
+});
+//collin --
+
+//collin --
+//===== DELETE PRODUCT DELETE =====
+app.delete('/products/:id', (req, res) => {
+    try {
+        Product.deleteOne({ id: req.params.id }).then(function(){
+            res.send('Product deleted!')
+            res.JSON('/products');
+        })   
+    } catch (error) {
+        console.log('-----error-----\n', error);
+        res.send('Error deleting product, please try again.');
+    }
+});
+//collin --
+
+//collin --
+//====== ALL PRODUCT REVIEW GET ======
+app.get('/products/:id/reviews', async (req, res) => {
+    try {
+        const foundProduct = await Product.findOne({ id: req.params.id })
+        if (foundProduct) {
+            const productReviews = await ProductReview.find({ title: {$gt: 0} })
+            res.json(productReviews);   
+        }
+    } catch (error) {
+        console.log('----error----\n', error);
+        res.send('error fetching product reviews 😢');
     }
 });
 //collin --

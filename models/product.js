@@ -1,6 +1,7 @@
 //collin --
 
 const mongoose = require('mongoose');
+const ProductReview = require('./productreview');
 
 const productSchema = new mongoose.Schema({
     title: {type: String, required: true},
@@ -10,8 +11,8 @@ const productSchema = new mongoose.Schema({
     specs: {type: Object, required: true},
     shippedBy: {type: String, required: true},
     soldBy: {type: String, required: true},
-    reviews: {type: Object, required: false},
-    photos: {type: File, required: false}
+    photos: {type: File, required: false},
+    child: ProductReview
 });
 
 const Product = mongoose.model('Product', productSchema);
