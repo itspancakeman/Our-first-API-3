@@ -11,7 +11,9 @@ db.on('error', (error) => console.log('Database error\n', error));
 
 const User = require('./user');
 const Product = require('./product');
+const Cart = require('./cart');
+const Order = require('./order');
 
 module.exports = {
-    User, Product, 
+    User, Product, Cart, Order, 
 }
